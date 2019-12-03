@@ -1,3 +1,6 @@
+# Visual Studio CMake
+out/
+
 # Prerequisites
 *.d
 
