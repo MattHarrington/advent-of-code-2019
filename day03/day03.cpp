@@ -11,6 +11,8 @@
 #include <utility>
 #include <vector>
 
+constexpr int dimension{ 40'000 }; // Grid length & width
+
 enum class Direction {
 	up, down, left, right
 };
@@ -47,7 +49,7 @@ Path parse_path(std::string line) {
 }
 
 Grid get_grid(Path path1, Path path2) {
-	Grid grid(40'001, std::vector<char>(40'001, '.'));
+	Grid grid(dimension, std::vector<char>(dimension, '.'));
 	size_t x{ grid[0].size() / 2 };
 	size_t y{ grid.size() / 2 };
 
@@ -132,7 +134,7 @@ void print_grid(Grid grid) {
 }
 
 int manhattan_dist(int x, int y) noexcept {
-	return abs(x - 20'000) + abs(y - 20'000);
+	return abs(x - dimension / 2) + abs(y - dimension / 2);
 }
 
 std::vector<int> get_intersections(const Grid& grid) {
@@ -185,7 +187,7 @@ int main() {
 	std::vector<int> intersections(get_intersections(grid));
 
 	const auto part_one_answer{ std::min_element(begin(intersections), end(intersections)) };
-	//std::cout << "part_one_answer: " << *part_one_answer << "\n";
+	std::cout << "part_one_answer: " << *part_one_answer << "\n";
 	assert(*part_one_answer == 2427);
 
 	return 0;
