@@ -11,17 +11,17 @@ enum opcode {
 
 std::vector<int> process(std::vector<int> input) {
 	size_t pos{ 0 };
-	while (input[pos] != halt) {
-		auto input1_pos{ input[pos + 1] };
-		auto input2_pos{ input[pos + 2] };
-		auto output_pos{ input[pos + 3] };
+	while (input.at(pos) != halt) {
+		auto input1_pos{ input.at(pos + 1) };
+		auto input2_pos{ input.at(pos + 2) };
+		auto output_pos{ input.at(pos + 3) };
 
-		switch (input[pos]) {
+		switch (input.at(pos)) {
 		case add:
-			input[output_pos] = input[input1_pos] + input[input2_pos];
+			input.at(output_pos) = input.at(input1_pos) + input.at(input2_pos);
 			break;
 		case multiply:
-			input[output_pos] = input[input1_pos] * input[input2_pos];
+			input.at(output_pos) = input.at(input1_pos) * input.at(input2_pos);
 			break;
 		default:
 			throw std::logic_error("Bad opcode");
@@ -61,11 +61,11 @@ int main() {
 	// Part 1
 
 	// Change input per the problem statement:
-	input[1] = 12;
-	input[2] = 2;
+	input.at(1) = 12;
+	input.at(2) = 2;
 
-	std::vector<int> output = process(input);
-	int part_one_answer = output[0];
+	std::vector<int> output1 = process(input);
+	const int part_one_answer = output1.at(0);
 	std::cout << "part_one_answer: " << part_one_answer << "\n";
 	assert(part_one_answer == 5534943);
 
@@ -74,11 +74,11 @@ int main() {
 	int part_two_answer{ -1 };
 
 	for (int n{ 0 }; n < 100; ++n) {
-		input[1] = n;
+		input.at(1) = n;
 		for (int v{ 0 }; v < 100; ++v) {
-			input[2] = v;
-			std::vector<int> output = process(input);
-			if (output[0] == 19690720) {
+			input.at(2) = v;
+			std::vector<int> output2 = process(input);
+			if (output2.at(0) == 19690720) {
 				part_two_answer = 100 * n + v;
 				// Set n, v to break out of loops:
 				n = 5000;

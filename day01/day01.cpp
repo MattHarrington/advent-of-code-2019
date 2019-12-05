@@ -8,14 +8,14 @@
 #include <string>
 #include <vector>
 
-int get_fuel_required(int mass) {
-	int fuel_required{ (mass / 3) - 2 };
+constexpr int get_fuel_required(int mass) noexcept {
+	const int fuel_required{ (mass / 3) - 2 };
 	return fuel_required <= 0 ? 0 : fuel_required;
 }
 
 int get_additional_fuel(int mass) {
 	if (mass == 0) { return 0; }
-	int fuel_required{ get_fuel_required(mass) };
+	const int fuel_required{ get_fuel_required(mass) };
 	return fuel_required + get_additional_fuel(fuel_required);
 }
 
@@ -37,7 +37,7 @@ int main() {
 
 	std::vector<int> part_one_fuel_requirements(module_masses.size());
 	std::transform(begin(module_masses), end(module_masses), begin(part_one_fuel_requirements), get_fuel_required);
-	int part_one_answer{ std::accumulate(begin(part_one_fuel_requirements), end(part_one_fuel_requirements), 0) };
+	const int part_one_answer{ std::accumulate(begin(part_one_fuel_requirements), end(part_one_fuel_requirements), 0) };
 
 	std::cout << "part_one_answer: " << part_one_answer << "\n";
 	assert(part_one_answer == 3231195);
@@ -52,7 +52,7 @@ int main() {
 	std::vector<int> part_two_fuel_requirements(module_masses.size());
 
 	std::transform(begin(module_masses), end(module_masses), begin(part_two_fuel_requirements), get_additional_fuel);
-	int part_two_answer{ std::accumulate(begin(part_two_fuel_requirements), end(part_two_fuel_requirements), 0) };
+	const int part_two_answer{ std::accumulate(begin(part_two_fuel_requirements), end(part_two_fuel_requirements), 0) };
 
 	std::cout << "part_two_answer: " << part_two_answer << "\n";
 	assert(part_two_answer == 4843929);
