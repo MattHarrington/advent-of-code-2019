@@ -1,12 +1,9 @@
 // https://adventofcode.com/2019/day/3
 
 #include <algorithm>
-#include <array>
 #include <cassert>
-#include <fstream>
 #include <iostream>
 #include <regex>
-#include <unordered_map>
 #include <string>
 #include <sstream>
 #include <utility>
@@ -18,9 +15,8 @@ enum class Direction {
 	up, down, left, right
 };
 
-using Grid = std::vector<std::vector<char>>;
+using Grid = std::vector<std::vector<int>>;
 using Path = std::vector<std::pair<Direction, int>>;
-using Intersections = std::unordered_map<std::pair<int, int>, int>;
 
 Path parse_path(std::string line) {
 	const std::regex rect_regex{ R"(([UDLR])(\d+))" };
@@ -50,195 +46,98 @@ Path parse_path(std::string line) {
 	return path;
 }
 
-/// More efficient to return collection of intersections, but I wanted
-/// the whole grid so I could print it.
-Grid get_grid_from_paths(Path path1, Path path2) {
-	Grid grid(dimension, std::vector<char>(dimension, '.'));
-	size_t x{ grid[0].size() / 2 };
-	size_t y{ grid.size() / 2 };
-
-	for (auto segment : path1) {
-		if (segment.first == Direction::up) {
-			while (segment.second--) {
-				--y;
-				grid[y][x] = 'x';
-			}
-		}
-		else if (segment.first == Direction::down) {
-			while (segment.second--) {
-				++y;
-				grid[y][x] = 'x';
-			}
-		}
-		else if (segment.first == Direction::left) {
-			while (segment.second--) {
-				--x;
-				grid[y][x] = 'x';
-			}
-		}
-		else if (segment.first == Direction::right) {
-			while (segment.second--) {
-				++x;
-				grid[y][x] = 'x';
-			}
-		}
-	}
-
-	x = grid[0].size() / 2;
-	y = grid.size() / 2;
-	for (auto segment : path2) {
-		if (segment.first == Direction::up) {
-			while (segment.second--) {
-				--y;
-				if (grid[y][x] == 'x') {
-					grid[y][x] = 'C';
-				}
-				else grid[y][x] = '$';
-			}
-		}
-		else if (segment.first == Direction::down) {
-			while (segment.second--) {
-				++y;
-				if (grid[y][x] == 'x') {
-					grid[y][x] = 'C';
-				}
-				else grid[y][x] = '$';
-			}
-		}
-		else if (segment.first == Direction::left) {
-			while (segment.second--) {
-				--x;
-				if (grid[y][x] == 'x') {
-					grid[y][x] = 'C';
-				}
-				else grid[y][x] = '$';
-			}
-		}
-		else if (segment.first == Direction::right) {
-			while (segment.second--) {
-				++x;
-				if (grid[y][x] == 'x') {
-					grid[y][x] = 'C';
-				}
-				else grid[y][x] = '$';
-			}
-		}
-	}
-
-	return grid;
-}
-
-void print_grid(Grid grid) {
-	for (const auto& row : grid) {
-		for (const auto& elem : row) {
-			std::cout << elem;
-		}
-		std::cout << "\n";
-	}
-}
-
 int manhattan_dist(int x, int y) noexcept {
 	return abs(x - dimension / 2) + abs(y - dimension / 2);
 }
 
-std::vector<int> get_intersections_from_grid(const Grid& grid) {
+std::vector<int> get_intersections_from_paths(Path path1, Path path2, int part = 1) {
 	std::vector<int> intersections;
-	for (int y{ 0 }; y < grid.size(); ++y) {
-		for (int x{ 0 }; x < grid[0].size(); ++x) {
-			if (grid[y][x] == 'C') {
-				intersections.push_back(manhattan_dist(x, y));
-			}
-		}
-	}
-	return intersections;
-}
-
-Intersections get_intersections_from_paths(Path path1, Path path2) {
-	// In progress
-	Intersections intersections;
-	Grid grid(dimension, std::vector<char>(dimension, '.'));
-	size_t x{ grid[0].size() / 2 };
-	size_t y{ grid.size() / 2 };
+	Grid grid(dimension, std::vector<int>(dimension, -1));
+	int x{ static_cast<int>(grid[0].size()) / 2 };
+	int y{ static_cast<int>(grid.size()) / 2 };
 
 	int path1_counter{ 0 };
 	for (auto segment : path1) {
-		++path1_counter;
 		if (segment.first == Direction::up) {
 			while (segment.second--) {
+				++path1_counter;
 				--y;
-				grid[y][x] = 'x';
+				if (grid[y][x] < 0) grid[y][x] = path1_counter;
 			}
 		}
 		else if (segment.first == Direction::down) {
 			while (segment.second--) {
+				++path1_counter;
 				++y;
-				grid[y][x] = 'x';
+				if (grid[y][x] < 0) grid[y][x] = path1_counter;
 			}
 		}
 		else if (segment.first == Direction::left) {
 			while (segment.second--) {
+				++path1_counter;
 				--x;
-				grid[y][x] = 'x';
+				if (grid[y][x] < 0) grid[y][x] = path1_counter;
 			}
 		}
 		else if (segment.first == Direction::right) {
 			while (segment.second--) {
+				++path1_counter;
 				++x;
-				grid[y][x] = 'x';
+				if (grid[y][x] < 0) grid[y][x] = path1_counter;
 			}
 		}
 	}
 
-	x = grid[0].size() / 2;
-	y = grid.size() / 2;
+	x = static_cast<int>(grid[0].size() / 2);
+	y = static_cast<int>(grid.size() / 2);
+	int path2_counter{ 0 };
 	for (auto segment : path2) {
 		if (segment.first == Direction::up) {
 			while (segment.second--) {
+				++path2_counter;
 				--y;
-				if (grid[y][x] == 'x') {
-					grid[y][x] = 'C';
+				if (grid[y][x] > 0) {
+					if (part == 1) intersections.push_back(manhattan_dist(x, y));
+					else intersections.push_back(grid[y][x] + path2_counter);
 				}
-				else grid[y][x] = '$';
 			}
 		}
 		else if (segment.first == Direction::down) {
 			while (segment.second--) {
+				++path2_counter;
 				++y;
-				if (grid[y][x] == 'x') {
-					grid[y][x] = 'C';
+				if (grid[y][x] > 0) {
+					if (part == 1) intersections.push_back(manhattan_dist(x, y));
+					else intersections.push_back(grid[y][x] + path2_counter);
 				}
-				else grid[y][x] = '$';
 			}
 		}
 		else if (segment.first == Direction::left) {
 			while (segment.second--) {
+				++path2_counter;
 				--x;
-				if (grid[y][x] == 'x') {
-					grid[y][x] = 'C';
+				if (grid[y][x] > 0) {
+					if (part == 1) intersections.push_back(manhattan_dist(x, y));
+					else intersections.push_back(grid[y][x] + path2_counter);
 				}
-				else grid[y][x] = '$';
 			}
 		}
 		else if (segment.first == Direction::right) {
 			while (segment.second--) {
+				++path2_counter;
 				++x;
-				if (grid[y][x] == 'x') {
-					grid[y][x] = 'C';
+				if (grid[y][x] > 0) {
+					if (part == 1) intersections.push_back(manhattan_dist(x, y));
+					else intersections.push_back(grid[y][x] + path2_counter);
 				}
-				else grid[y][x] = '$';
 			}
 		}
 	}
 
 	return intersections;
 }
-int main() {
-	//auto ex1_path1{ parse_path("R8,U5,L5,D3") };
-	//auto ex1_path2{ parse_path("U7,R6,D4,L4") };
-	//auto ex1_grid{ get_grid(ex1_path1, ex1_path2) };
-	////print_grid(ex1_grid);
-	//auto ex1_intersections{ get_intersections(ex1_grid) };
 
+int main() {
 	auto path1{ parse_path("R990,U944,L921,U993,L64,U29,R899,D406,R841,U716,L32,U658,L830,D481,L441,U491,L687,D847,"
 		"L459,U920,R165,U224,L896,D868,L191,U877,L909,U467,R798,U132,R234,U49,R484,U911,R108,D308,R867,U350,L404,U107,"
 		"L84,U668,R850,U470,L182,U93,R284,U999,L664,U110,R650,D189,R540,D112,R794,U999,R871,D829,L549,U988,R654,D411,"
@@ -266,12 +165,17 @@ int main() {
 		"U603,R46,U889,R897,D442,R997,U705,L82,D963,R941,U701,L347,D824,R269,U891,L569,D558,L867,U145,R121,D369,R542,U227,L198,"
 		"U863,L755,U273,L734,D233,R578,U67,L821,U600,L203,D234,R695,U819,L639,D700,R295,D129,L612,U157,R212,U536,L968,U562,L999,"
 		"D391,L231,U262,R334,D967,R463,U748,R842,D500,R860,U856,R263,D633,R460,D337,L880,U146,R910") };
-	Grid grid{ get_grid_from_paths(path1, path2) };
-	std::vector<int> intersections(get_intersections_from_grid(grid));
 
-	const auto part_one_answer{ std::min_element(begin(intersections), end(intersections)) };
+	std::vector<int> part1_intersections{ get_intersections_from_paths(path1, path2) };
+	const auto part_one_answer{ std::min_element(begin(part1_intersections), end(part1_intersections)) };
 	std::cout << "part_one_answer: " << *part_one_answer << "\n";
 	assert(*part_one_answer == 2427);
 
+	std::vector<int> part2_intersections{ get_intersections_from_paths(path1, path2, 2) };
+	const auto part_two_answer{ std::min_element(begin(part2_intersections), end(part2_intersections)) };
+	std::cout << "part_two_answer: " << *part_two_answer << "\n";
+	assert(*part_one_answer == 27890);
+
 	return 0;
 }
+
