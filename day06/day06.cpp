@@ -94,21 +94,21 @@ int main() {
 	
 	// Part 1 sample
 	Tree<std::string> sample_tree(part_one_sample_adj_list, "COM");
-	int sample_part_one_answer{ sample_tree.get_num_orbits() };
+	const int sample_part_one_answer{ sample_tree.get_num_orbits() };
 	assert(sample_part_one_answer == 42);
 
 	// Part 1 problem data
 	Tree<std::string> tree(adj_list, "COM");
-	int part_one_answer{ tree.get_num_orbits() };
+	const int part_one_answer{ tree.get_num_orbits() };
 	std::cout << "part_one_answer: " << part_one_answer << "\n";
 	assert(part_one_answer == 315757);
 	
 	// Part 2 sample
-	size_t sample_part_two_answer{ part_two(part_two_sample_data) };
+	const size_t sample_part_two_answer{ part_two(part_two_sample_data) };
 	assert(sample_part_two_answer == 4);
 
 	// Part 2 problem data
-	size_t part_two_answer{ part_two(problem_data) };
+	const size_t part_two_answer{ part_two(problem_data) };
 	std::cout << "part_two_answer: " << part_two_answer << "\n";
 	assert(part_two_answer == 481);
 

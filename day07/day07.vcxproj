@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{FD738EE7-E4D4-49E6-82CE-61E6C536EC42}</ProjectGuid>
+    <ProjectGuid>{5715B28B-675F-4D0D-8CFD-9361C8065698}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>day06</RootNamespace>
+    <RootNamespace>day07</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -152,13 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="day06.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="day06_input.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Tree.hpp" />
+    <ClCompile Include="day07.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
