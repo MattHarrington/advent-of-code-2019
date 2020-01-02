@@ -7,18 +7,18 @@
 #include <string>
 
 // Alternative: use std::is_sorted()
-bool digits_are_increasing(int i) {
-	int first_digit{ i / 100'000 };
+bool digits_are_increasing(int i) noexcept {
+	const int first_digit{ i / 100'000 };
 	i %= 100'000;
-	int second_digit{ i / 10'000 };
+	const int second_digit{ i / 10'000 };
 	i %= 10'000;
-	int third_digit{ i / 1'000 };
+	const int third_digit{ i / 1'000 };
 	i %= 1'000;
-	int fourth_digit{ i / 100 };
+	const int fourth_digit{ i / 100 };
 	i %= 100;
-	int fifth_digit{ i / 10 };
+	const int fifth_digit{ i / 10 };
 	i %= 10;
-	int sixth_digit{ i };
+	const int sixth_digit{ i };
 	return (first_digit <= second_digit) && (second_digit <= third_digit)
 		&& (third_digit <= fourth_digit) && (fourth_digit <= fifth_digit) && (fifth_digit <= sixth_digit);
 }
