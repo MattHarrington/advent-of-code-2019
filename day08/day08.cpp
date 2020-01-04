@@ -32,28 +32,28 @@ sif_image_t get_image(const std::string& filename) {
 	return image;
 }
 
-int count_zeroes(layer_t layer) {
-	int zeroes{ 0 };
+size_t count_zeroes(layer_t layer) {
+	size_t zeroes{ 0 };
 	for (const auto& line : layer) {
-		zeroes += static_cast<int>(std::count(line.begin(), line.end(), '0'));
+		zeroes += std::count(line.begin(), line.end(), '0');
 	}
 	return zeroes;
 }
 
-int get_layer_with_min_zeroes(sif_image_t image) {
-	std::vector<int> zeroes_in_layers;
+size_t get_layer_with_min_zeroes(sif_image_t image) {
+	std::vector<size_t> zeroes_in_layers;
 	for (const auto& layer : image) {
 		zeroes_in_layers.push_back(count_zeroes(layer));
 	}
-	return static_cast<int>(std::distance(begin(zeroes_in_layers), std::min_element(begin(zeroes_in_layers), end(zeroes_in_layers))));
+	return std::distance(begin(zeroes_in_layers), std::min_element(begin(zeroes_in_layers), end(zeroes_in_layers)));
 }
 
-int count_ones_times_twos(std::vector<std::vector<char>> layer) {
-	int ones{ 0 };
-	int twos{ 0 };
+size_t count_ones_times_twos(std::vector<std::vector<char>> layer) {
+	size_t ones{ 0 };
+	size_t twos{ 0 };
 	for (const auto& line : layer) {
-		ones += static_cast<int>(std::count(begin(line), end(line), '1'));
-		twos += static_cast<int>(std::count(begin(line), end(line), '2'));
+		ones += std::count(begin(line), end(line), '1');
+		twos += std::count(begin(line), end(line), '2');
 	}
 	return ones * twos;
 }
@@ -64,6 +64,7 @@ layer_t process_image(sif_image_t image) {
 		for (size_t x{ 0 }; x < 25; ++x) {
 			int z{ 0 };
 			while (image.at(z).at(y).at(x) == '2') {
+				// If pixel is transparent, look one level deeper
 				++z;
 			}
 			processed_layer.at(y).at(x) = image.at(z).at(y).at(x);
@@ -87,13 +88,13 @@ int main()
 	const sif_image_t image{ get_image("day08_input.txt") };
 	assert(image.size() == 100);
 
-	const int min_layer{ get_layer_with_min_zeroes(image) };
-	const int part1_answer{ count_ones_times_twos(image.at(min_layer)) };
+	const size_t min_layer{ get_layer_with_min_zeroes(image) };
+	const size_t part1_answer{ count_ones_times_twos(image.at(min_layer)) };
 	std::cout << "part1_answer: " << part1_answer << "\n";
 	assert(part1_answer == 2500);
 
 	layer_t part2_answer{ process_image(image) };
-	print_layer(part2_answer); // "CYUAH"
+	print_layer(part2_answer); // prints "CYUAH"
 
 	return 0;
 }
