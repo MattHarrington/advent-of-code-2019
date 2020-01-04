@@ -21,7 +21,7 @@ struct Program {
 	std::queue<int> input;
 };
 
-auto process(Program& p) {
+std::queue<int> process(Program& p) {
 	bool running{ true };
 	std::queue<int> outputs;
 	while (running) {
@@ -60,9 +60,7 @@ auto process(Program& p) {
 		}
 		case opcode::output: {
 			auto param1{ param1_mode == mode::position ? p.intcodes.at(p.intcodes.at(p.ip + 1)) : p.intcodes.at(p.ip + 1) };
-			//if (param1 != 0) {
 			outputs.push(param1);
-			//}
 			p.ip += 2;
 			break;
 		}
@@ -126,7 +124,6 @@ auto process(Program& p) {
 }
 
 int part1(Program p, std::vector<int> phase_settings) {
-
 	std::queue<int> input;
 	std::vector<int> outputs;
 	do {
@@ -168,40 +165,38 @@ int part1(Program p, std::vector<int> phase_settings) {
 }
 
 int part2(const std::vector<int>& program, std::vector<int> phase_settings) {
-	Program ampA{ program, 0, std::queue<int>{} };
-	Program ampB{ program, 0, std::queue<int>{} };
-	Program ampC{ program, 0, std::queue<int>{} };
-	Program ampD{ program, 0, std::queue<int>{} };
-	Program ampE{ program, 0, std::queue<int>{} };
-
-	ampA.input.push(phase_settings.at(0));
-	ampB.input.push(phase_settings.at(1));
-	ampC.input.push(phase_settings.at(2));
-	ampD.input.push(phase_settings.at(3));
-	ampE.input.push(phase_settings.at(4));
-
-	//std::queue<int> input;
 	std::vector<int> outputs;
-	opcode ampE_opcode{ ampE.intcodes.at(ampE.ip) < 100 ? static_cast<opcode>(ampE.intcodes.at(ampE.ip))
-		: static_cast<opcode>(ampE.intcodes.at(ampE.ip) % 100) };
 	do {
-		ampA.input.push(0);
-		std::queue<int> ampE_output;
+		Program ampA{ program, 0, std::queue<int>{} };
+		Program ampB{ program, 0, std::queue<int>{} };
+		Program ampC{ program, 0, std::queue<int>{} };
+		Program ampD{ program, 0, std::queue<int>{} };
+		Program ampE{ program, 0, std::queue<int>{} };
+
+		ampA.input.push(phase_settings.at(0));
+		ampB.input.push(phase_settings.at(1));
+		ampC.input.push(phase_settings.at(2));
+		ampD.input.push(phase_settings.at(3));
+		ampE.input.push(phase_settings.at(4));
+
+		ampA.input.push(0); // Initial input
+
 		do {
 			// Amp A
-			std::queue<int> ampA_output{ process(ampA) };
+			std::queue<int> ampA_output = process(ampA);
 			while (!ampA_output.empty()) {
+				// TODO: this is hacky.  Look at std::deque instead.
 				ampB.input.push(ampA_output.front());
 				ampA_output.pop();
 			}
-			
+
 			// Amp B
 			std::queue<int> ampB_output{ process(ampB) };
 			while (!ampB_output.empty()) {
 				ampC.input.push(ampB_output.front());
 				ampB_output.pop();
 			}
-			
+
 			// Amp C
 			std::queue<int> ampC_output{ process(ampC) };
 			while (!ampC_output.empty()) {
@@ -217,16 +212,15 @@ int part2(const std::vector<int>& program, std::vector<int> phase_settings) {
 			}
 
 			// Amp E
-			ampE_output = process(ampE);
+			std::queue<int> ampE_output = process(ampE);
 			while (!ampE_output.empty()) {
 				ampA.input.push(ampE_output.front());
 				ampE_output.pop();
 			}
-		} while (ampE_opcode != opcode::halt);
 
-		outputs.push_back(ampE_output.front());
-		ampE_opcode = ampE.intcodes.at(ampE.ip) < 100 ? static_cast<opcode>(ampE.intcodes.at(ampE.ip))
-			: static_cast<opcode>(ampE.intcodes.at(ampE.ip) % 100);
+		} while (static_cast<opcode>(ampE.intcodes.at(ampE.ip)) != opcode::halt);
+
+		outputs.push_back(ampA.input.front());
 	} while (std::next_permutation(begin(phase_settings), end(phase_settings)));
 
 	return *std::max_element(begin(outputs), end(outputs));
@@ -245,14 +239,25 @@ int main() {
 		3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,101,2,9,9,4,9,99,3,9,1001,9,1,9,4,9,3,9,1001,9,
 		2,9,4,9,3,9,101,1,9,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,
 		1001,9,1,9,4,9,3,9,1001,9,2,9,4,9,3,9,1002,9,2,9,4,9,99 };
-	std::vector<int> part2_program{ 3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,
-									27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5 };
+	std::vector<int> sample1_part2_program{ 3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,
+											27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5 };
+	std::vector<int> sample2_part2_program{ 3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,
+											-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,
+											53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10 };
+
 	const int part1_answer{ part1(Program{program,0,std::queue<int>()}, std::vector<int>{0,1,2,3,4}) };
 	std::cout << "part1_answer: " << part1_answer << "\n";
 	assert(part1_answer == 70597);
 
-	const int part2_answer{ part2(part2_program, std::vector<int>{5,6,7,8,9}) };
+	const int sample1_part2_answer{ part2(sample1_part2_program, std::vector<int>{5,6,7,8,9}) };
+	assert(sample1_part2_answer == 139629729);
+
+	const int sample2_part2_answer{ part2(sample2_part2_program, std::vector<int>{5,6,7,8,9}) };
+	assert(sample2_part2_answer == 18216);
+
+	const int part2_answer{ part2(program, std::vector<int>{5,6,7,8,9}) };
 	std::cout << "part2_answer: " << part2_answer << "\n";
+	assert(part2_answer == 30872528);
 
 	return 0;
 }
