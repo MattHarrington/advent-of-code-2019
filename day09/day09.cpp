@@ -32,7 +32,10 @@ mode get_mode(long long modes) noexcept {
 	else return mode::relative;
 }
 
-long long get_param(Program& p, int param_num, mode mode, bool lhs = false) {
+/// <summary>Get a parameter</summary>
+/// NB: not sure param tag is meant to be used this way:
+/// <param name="lhs">True if parameter will be assigned to</param>
+long long get_param(const Program& p, int param_num, mode mode, bool lhs = false) {
 	if (lhs && mode == mode::relative) {
 		return p.intcodes.at(p.ip + param_num) + p.offset;
 	}
