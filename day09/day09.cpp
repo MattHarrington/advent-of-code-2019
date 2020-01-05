@@ -22,11 +22,11 @@ enum class mode {
 struct Program {
 	std::vector<long long> intcodes;
 	size_t ip;
-	int offset;
+	size_t offset;
 	std::queue<int> input;
 };
 
-mode get_mode(long long modes) {
+mode get_mode(long long modes) noexcept {
 	if (modes % 10 == 0) return mode::position;
 	else if (modes % 10 == 1) return mode::immediate;
 	else return mode::relative;
@@ -67,38 +67,38 @@ std::queue<long long> process(Program& p) {
 
 		switch (op) {
 		case opcode::add: {
-			auto param1{ get_param(p,1,param1_mode) };
-			auto param2{ get_param(p,2,param2_mode) };
-			auto param3{ get_param(p,3,param3_mode,true) };
+			const auto param1{ get_param(p,1,param1_mode) };
+			const auto param2{ get_param(p,2,param2_mode) };
+			const auto param3{ get_param(p,3,param3_mode,true) };
 			p.intcodes.at(param3) = param1 + param2;
 			p.ip += 4;
 			break;
 		}
 		case opcode::multiply: {
-			auto param1{ get_param(p,1,param1_mode) };
-			auto param2{ get_param(p,2,param2_mode) };
-			auto param3{ get_param(p,3,param3_mode,true) };
+			const auto param1{ get_param(p,1,param1_mode) };
+			const auto param2{ get_param(p,2,param2_mode) };
+			const auto param3{ get_param(p,3,param3_mode,true) };
 			p.intcodes.at(param3) = param1 * param2;
 			p.ip += 4;
 			break;
 		}
 		case opcode::input: {
 			if (p.input.empty()) { running = false; break; }
-			auto param1{ get_param(p,1,param1_mode, true) };
+			const auto param1{ get_param(p,1,param1_mode, true) };
 			p.intcodes.at(param1) = p.input.front();
 			p.input.pop();
 			p.ip += 2;
 			break;
 		}
 		case opcode::output: {
-			auto param1{ get_param(p,1,param1_mode) };
+			const auto param1{ get_param(p,1,param1_mode) };
 			outputs.push(param1);
 			p.ip += 2;
 			break;
 		}
 		case opcode::jump_if_true: {
-			auto param1{ get_param(p,1,param1_mode) };
-			auto param2{ get_param(p,2,param2_mode) };
+			const auto param1{ get_param(p,1,param1_mode) };
+			const auto param2{ get_param(p,2,param2_mode) };
 			if (param1 != 0) {
 				p.ip = param2;
 			}
@@ -108,8 +108,8 @@ std::queue<long long> process(Program& p) {
 			break;
 		}
 		case opcode::jump_if_false: {
-			auto param1{ get_param(p,1,param1_mode) };
-			auto param2{ get_param(p,2,param2_mode) };
+			const auto param1{ get_param(p,1,param1_mode) };
+			const auto param2{ get_param(p,2,param2_mode) };
 			if (param1 == 0) {
 				p.ip = param2;
 			}
@@ -119,9 +119,9 @@ std::queue<long long> process(Program& p) {
 			break;
 		}
 		case opcode::less_than: {
-			auto param1{ get_param(p,1,param1_mode) };
-			auto param2{ get_param(p,2,param2_mode) };
-			auto param3{ get_param(p,3,param3_mode,true) };
+			const auto param1{ get_param(p,1,param1_mode) };
+			const auto param2{ get_param(p,2,param2_mode) };
+			const auto param3{ get_param(p,3,param3_mode,true) };
 			if (param1 < param2) {
 				p.intcodes.at(param3) = 1;
 			}
@@ -132,9 +132,9 @@ std::queue<long long> process(Program& p) {
 			break;
 		}
 		case opcode::equals: {
-			auto param1{ get_param(p,1,param1_mode) };
-			auto param2{ get_param(p,2,param2_mode) };
-			auto param3{ get_param(p,3,param3_mode,true) };
+			const auto param1{ get_param(p,1,param1_mode) };
+			const auto param2{ get_param(p,2,param2_mode) };
+			const auto param3{ get_param(p,3,param3_mode,true) };
 			if (param1 == param2) {
 				p.intcodes.at(param3) = 1;
 			}
@@ -145,7 +145,7 @@ std::queue<long long> process(Program& p) {
 			break;
 		}
 		case opcode::adjust_offset: {
-			auto param1{ get_param(p,1,param1_mode) };
+			const auto param1{ get_param(p,1,param1_mode) };
 			p.offset += param1;
 			p.ip += 2;
 			break;
@@ -187,23 +187,38 @@ int main() {
 	std::vector<long long> intcodes{ get_program("day09_input.txt") };
 	assert(intcodes.size() == PROGRAM_SIZE);
 
-	Program example1_program{ example1_intcodes };
+	// Examples
+
+	Program example1_program{ example1_intcodes,0,0,std::queue<int>{} };
 	auto example1_output{ process(example1_program) };
+	std::vector<long long> example1_duplicated_intcodes;
+	while (!example1_output.empty()) {
+		example1_duplicated_intcodes.push_back(example1_output.front());
+		example1_output.pop();
+	}
+	for (size_t i{ 0 }; i < PROGRAM_SIZE; ++i) example1_duplicated_intcodes.push_back(0);
+	assert(example1_duplicated_intcodes == example1_intcodes);
 
-	Program example2_program{ example2_intcodes };
+	Program example2_program{ example2_intcodes,0,0,std::queue<int>{} };
 	auto example2_output{ process(example2_program) };
+	assert(example2_output.front() == 1219070632396864);
 
-	Program example3_program{ example3_intcodes };
+	Program example3_program{ example3_intcodes,0,0,std::queue<int>{} };
 	auto example3_output{ process(example3_program) };
+	assert(example3_output.front() == 1125899906842624);
 
-	Program part1_program{ intcodes };
+	// Part 1
+
+	Program part1_program{ intcodes,0,0,std::queue<int>{} };
 	part1_program.input.push(1);
 	const auto part1_output{ process(part1_program) };
 	const auto part1_answer{ part1_output.front() };
 	std::cout << "part1_answer: " << part1_answer << "\n";
 	assert(part1_answer == 3409270027);
 
-	Program part2_program{ intcodes };
+	// Part 2
+
+	Program part2_program{ intcodes,0,0,std::queue<int>{} };
 	part2_program.input.push(2);
 	const auto part2_output{ process(part2_program) };
 	const auto part2_answer{ part2_output.front() };
