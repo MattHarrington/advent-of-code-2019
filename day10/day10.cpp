@@ -49,53 +49,106 @@ std::vector<Point> get_asteroids(const std::vector<std::vector<bool>>& asteroid_
 	return asteroids;
 }
 
-std::vector<int> reachable_asteroids(const std::vector<Point>& asteroids) {
-	std::vector<int> reachable_asteroids;
+std::vector<int> num_reachable_asteroids(const std::vector<Point>& asteroids) {
+	std::vector<int> nums_reachable_asteroids;
 	for (const auto& asteroid : asteroids) {
 		int reachable{ 0 };
+		std::vector<Point> reachable_asteroids;
 		for (const auto& next_asteroid : asteroids) {
 			if (next_asteroid == asteroid) continue;
-			int x_dist{ std::abs(asteroid.x - next_asteroid.y) };
+			int x_dist{ std::abs(asteroid.x - next_asteroid.x) };
 			int y_dist{ std::abs(asteroid.y - next_asteroid.y) };
-			if (y_dist != 0 && x_dist % y_dist == 0) {
+			if (x_dist == 0) {
+				y_dist = 1;
+			}
+			else if (y_dist == 0) {
+				x_dist = 1;
+			}
+			else if (y_dist != 0 && x_dist % y_dist == 0) { // Bug. Doesn't reduce (8,6), for example.
 				x_dist /= y_dist;
+				y_dist = 1;
 			}
 			else if (x_dist != 0 && y_dist % x_dist == 0) {
 				y_dist /= x_dist;
+				x_dist = 1;
 			}
 			int x{ next_asteroid.x };
 			int y{ next_asteroid.y };
-			while (x_dist != asteroid.x && y_dist != asteroid.y) {
-				if (x_dist > asteroid.x) {
+			bool looping{ true };
+			while (looping) {
+				if (x_dist == 0) {
+
+				}
+				else if (next_asteroid.x > asteroid.x) {
 					x -= x_dist;
 				}
-				else {
+				else if (next_asteroid.x < asteroid.x) {
 					x += x_dist;
 				}
-				if (y_dist > asteroid.y) {
+				if (y_dist == 0) {
+
+				}
+				else if (next_asteroid.y > asteroid.y) {
 					y -= y_dist;
 				}
-				else {
+				else if (next_asteroid.y < asteroid.y) {
 					y += y_dist;
 				}
-				if (std::find(begin(asteroids), end(asteroids), Point{ x,y }) != end(asteroids)) {
-					goto NEXT_ASTEROID;
+				if (x == asteroid.x && y == asteroid.y) {
+					++reachable;
+					reachable_asteroids.emplace_back(next_asteroid);
+					looping = false;
+				}
+				else if (std::find(begin(asteroids), end(asteroids), Point{ x,y }) != end(asteroids)) {
+					looping = false;
 				}
 			}
-			reachable += 1;
-		NEXT_ASTEROID:
 			std::cout << "NEXT_ASTEROID" << "\n";
 		}
-		reachable_asteroids.push_back(reachable);
+		if (asteroid == Point{ 5,8 }) {
+			std::cout << "break" << "\n";
+		}
+		nums_reachable_asteroids.push_back(reachable);
 	}
-	return reachable_asteroids;
+	return nums_reachable_asteroids;
 }
 
 int main()
 {
 	std::vector<std::vector<bool>> example1_asteroid_map{ read_input_file("day10_example1_input.txt") };
 	std::vector<Point> example1_asteroids{ get_asteroids(example1_asteroid_map) };
-	std::vector<int> example1_reachable_asteroids{ reachable_asteroids(example1_asteroids) };
+	std::vector<int> example1_reachable_asteroids{ num_reachable_asteroids(example1_asteroids) };
+	const int part1_example1_answer{ *std::max_element(begin(example1_reachable_asteroids), end(example1_reachable_asteroids)) };
+	std::cout << "part1_example1_answer: " << part1_example1_answer << "\n";
+	assert(part1_example1_answer == 8);
+
+	std::vector<std::vector<bool>> example2_asteroid_map{ read_input_file("day10_example2_input.txt") };
+	std::vector<Point> example2_asteroids{ get_asteroids(example2_asteroid_map) };
+	std::vector<int> example2_reachable_asteroids{ num_reachable_asteroids(example2_asteroids) };
+	const int part1_example2_answer{ *std::max_element(begin(example2_reachable_asteroids), end(example2_reachable_asteroids)) };
+	std::cout << "part1_example2_answer: " << part1_example2_answer << "\n";
+	assert(part1_example2_answer == 33);
+
+	std::vector<std::vector<bool>> example3_asteroid_map{ read_input_file("day10_example3_input.txt") };
+	std::vector<Point> example3_asteroids{ get_asteroids(example3_asteroid_map) };
+	std::vector<int> example3_reachable_asteroids{ num_reachable_asteroids(example3_asteroids) };
+	const int part1_example3_answer{ *std::max_element(begin(example3_reachable_asteroids), end(example3_reachable_asteroids)) };
+	std::cout << "part1_example3_answer: " << part1_example3_answer << "\n";
+	//assert(part1_example3_answer == 35);
+
+	std::vector<std::vector<bool>> example4_asteroid_map{ read_input_file("day10_example4_input.txt") };
+	std::vector<Point> example4_asteroids{ get_asteroids(example4_asteroid_map) };
+	std::vector<int> example4_reachable_asteroids{ num_reachable_asteroids(example4_asteroids) };
+	const int part1_example4_answer{ *std::max_element(begin(example4_reachable_asteroids), end(example4_reachable_asteroids)) };
+	std::cout << "part1_example4_answer: " << part1_example4_answer << "\n";
+	assert(part1_example4_answer == 41);
+
+	std::vector<std::vector<bool>> example5_asteroid_map{ read_input_file("day10_example5_input.txt") };
+	std::vector<Point> example5_asteroids{ get_asteroids(example5_asteroid_map) };
+	std::vector<int> example5_reachable_asteroids{ num_reachable_asteroids(example5_asteroids) };
+	const int part1_example5_answer{ *std::max_element(begin(example5_reachable_asteroids), end(example5_reachable_asteroids)) };
+	std::cout << "part1_example5_answer: " << part1_example5_answer << "\n";
+	assert(part1_example5_answer == 210);
 
 	std::vector<std::vector<bool>> asteroid_map{ read_input_file("day10_input.txt") };
 	assert(asteroid_map.size() == 26);
