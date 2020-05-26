@@ -121,7 +121,7 @@ int manhattan_distance(const Point& a, const Point& b) noexcept {
 
 int part_two(const Point& listening_station, std::vector<Point>& asteroids) {
     // Put angles into a vector, so they're sortable.
-    std::vector < std::tuple< double, Point, int >> angles; // Angle, asteroid coordinates, distance to listening_station
+    std::vector<std::tuple<double, Point, int>> angles; // Angle, asteroid coordinates, distance to listening_station
     for (const auto& asteroid : asteroids) {
         if (asteroid == listening_station) continue;
         double angle{ std::atan2(asteroid.x - listening_station.x, asteroid.y - listening_station.y) };
