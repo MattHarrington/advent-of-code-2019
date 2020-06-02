@@ -61,3 +61,60 @@ TEST_CASE("energy after 10 timesteps should be 179", "[part_one]") {
     REQUIRE(total_energy == 179);
 }
 
+TEST_CASE("sample moons should repeat x value at 17", "[part_two]") {
+    std::vector<Moon> sample_moons{
+        Moon{{-1,0,2}, {0,0,0}},
+        Moon{{2,-10,-7}, {0,0,0}},
+        Moon{{4,-8,8}, {0,0,0}},
+        Moon{{3,5,-1}, {0,0,0}}
+    };
+    int step{ 0 };
+    do {
+        sample_moons = timestep(sample_moons);
+        ++step;
+    } while (sample_moons[0].position.x != -1 || sample_moons[1].position.x != 2
+        || sample_moons[2].position.x != 4 || sample_moons[3].position.x != 3);
+
+    REQUIRE(step == 17);
+}
+
+TEST_CASE("sample moons should repeat y value at 27", "[part_two]") {
+    std::vector<Moon> sample_moons{
+        Moon{{-1,0,2}, {0,0,0}},
+        Moon{{2,-10,-7}, {0,0,0}},
+        Moon{{4,-8,8}, {0,0,0}},
+        Moon{{3,5,-1}, {0,0,0}}
+    };
+    int step{ 0 };
+    do {
+        sample_moons = timestep(sample_moons);
+        ++step;
+    } while (sample_moons[0].position.y != 0 || sample_moons[1].position.y != -10 ||
+        sample_moons[2].position.y != -8 || sample_moons[3].position.y != 5);
+
+    REQUIRE(step == 27);
+}
+
+TEST_CASE("sample moons should repeat z value at 43", "[part_two]") {
+    std::vector<Moon> sample_moons{
+        Moon{{-1,0,2}, {0,0,0}},
+        Moon{{2,-10,-7}, {0,0,0}},
+        Moon{{4,-8,8}, {0,0,0}},
+        Moon{{3,5,-1}, {0,0,0}}
+    };
+    int step{ 0 };
+    do {
+        sample_moons = timestep(sample_moons);
+        ++step;
+    } while (sample_moons[0].position.z != 2 || sample_moons[1].position.z != -7 ||
+        sample_moons[2].position.z != 8 || sample_moons[3].position.z != -1);
+
+    REQUIRE(step == 43);
+}
+
+TEST_CASE("sample moons should repeat state at timestep 2722", "[part_two]") {
+    int repeat_timestep_x_y{ std::lcm(16,26) };
+    int repeat_timestep_xy_z{ std::lcm(repeat_timestep_x_y, 42) };
+    REQUIRE(repeat_timestep_xy_z == 2772);
+}
+

@@ -7,14 +7,12 @@ bool Position::operator==(const Position& other) const noexcept {
     return x == other.x && y == other.y && z == other.z;
 }
 
-bool Velocity::operator==(const Velocity& other) const noexcept
-{
+bool Velocity::operator==(const Velocity& other) const noexcept {
     return x_velocity == other.x_velocity && y_velocity == other.y_velocity
         && z_velocity == other.z_velocity;
 }
 
-bool Moon::operator==(const Moon& other) const noexcept
-{
+bool Moon::operator==(const Moon& other) const noexcept {
     return position == other.position && velocity == other.velocity;
 }
 
