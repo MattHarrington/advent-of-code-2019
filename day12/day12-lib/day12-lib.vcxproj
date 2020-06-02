@@ -158,7 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="day12-lib.hpp" />
+    <ClInclude Include="day12-lib.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="day12-lib.cpp" />

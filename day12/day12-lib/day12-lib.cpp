@@ -1,19 +1,21 @@
 // https://adventofcode.com/2019/day/12
 
 #include <cmath>
-#include "day12-lib.hpp"
+#include "day12-lib.h"
 
-bool operator==(const Moon lhs, const Moon rhs) noexcept {
-    return lhs.position == rhs.position && lhs.velocity == rhs.velocity;
+bool Position::operator==(const Position& other) const noexcept {
+    return x == other.x && y == other.y && z == other.z;
 }
 
-bool operator==(const Position lhs, const Position rhs) noexcept {
-    return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
+bool Velocity::operator==(const Velocity& other) const noexcept
+{
+    return x_velocity == other.x_velocity && y_velocity == other.y_velocity
+        && z_velocity == other.z_velocity;
 }
 
-bool operator==(const Velocity lhs, const Velocity rhs) noexcept {
-    return lhs.x_velocity == rhs.x_velocity && lhs.y_velocity == rhs.y_velocity
-        && lhs.z_velocity == rhs.z_velocity;
+bool Moon::operator==(const Moon& other) const noexcept
+{
+    return position == other.position && velocity == other.velocity;
 }
 
 std::vector<Moon> timestep(const std::vector<Moon>& moons) {

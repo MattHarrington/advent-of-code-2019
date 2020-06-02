@@ -3,7 +3,7 @@
 #include <cassert>
 #include <iostream>
 #include <numeric>
-#include "day12-lib.hpp"
+#include "day12-lib.h"
 
 int main() {
     std::vector<Moon> moons{

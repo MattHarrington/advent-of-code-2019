@@ -2,7 +2,7 @@
 
 #include <catch.hpp>
 #include <numeric>
-#include "day12-lib.hpp"
+#include "day12-lib.h"
 
 TEST_CASE("sample after 1 timestep should be correct", "[part_one]") {
     const std::vector<Moon> sample_moons{
