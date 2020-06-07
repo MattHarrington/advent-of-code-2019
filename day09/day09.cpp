@@ -164,7 +164,7 @@ std::queue<long long> process(Program& p) {
 	return outputs;
 }
 
-std::vector<long long> get_program(std::string filename) {
+std::vector<long long> get_intcodes(std::string filename) {
 	std::vector<long long> program(PROGRAM_SIZE, 0);
 	std::fstream in{ filename };
 	if (!in) throw std::runtime_error("File not found");
@@ -187,7 +187,7 @@ int main() {
 	std::vector<long long> example3_intcodes{ 104,1125899906842624,99 };
 	for (size_t i{ 0 }; i < PROGRAM_SIZE; ++i) example3_intcodes.push_back(0);
 
-	std::vector<long long> intcodes{ get_program("day09_input.txt") };
+	std::vector<long long> intcodes{ get_intcodes("day09_input.txt") };
 	assert(intcodes.size() == PROGRAM_SIZE);
 
 	// Examples
