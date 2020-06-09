@@ -144,6 +144,11 @@
   <ItemGroup>
     <Text Include="day14-input.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\day14-lib\day14-lib.vcxproj">
+      <Project>{b2012117-9be2-47ce-8e39-2eb3670edc7e}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
