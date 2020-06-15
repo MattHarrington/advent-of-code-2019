@@ -153,6 +153,7 @@
     <Text Include="day14-sample-input2.txt" />
     <Text Include="day14-sample-input3.txt" />
     <Text Include="day14-sample-input4.txt" />
+    <Text Include="day14-sample-input5.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\day14-lib\day14-lib.vcxproj">

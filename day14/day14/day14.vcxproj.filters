@@ -35,5 +35,8 @@
     <Text Include="day14-sample-input4.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="day14-sample-input5.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
